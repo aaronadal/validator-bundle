@@ -1,0 +1,15 @@
+services:
+    aaronadal.validator.subject.factory:
+        class: Aaronadal\ValidatorBundle\Subject\SubjectFactory
+        arguments: 
+            - '@request_stack'
+            - "@=service('session').getFlashBag()"
+
+    subject_factory:
+        alias: aaronadal.validator.subject.factory
+
+    aaronadal.validator.factory:
+        class: Aaronadal\Validator\Validator\ValidatorFactory
+
+    validator_factory:
+        alias: aaronadal.validator.factory
