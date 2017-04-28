@@ -17,27 +17,28 @@ interface SubjectFactoryInterface extends \Aaronadal\Validator\Subject\SubjectFa
      * Creates and initializes a new SubjectInterface instance with a RequestDataProvider
      * that wraps the current master request as a data setter.
      *
-     * @param string $id       Unique identifier for the new subject instance.
-     * @param mixed  $setter   The data setter.
+     * @param string|null $id     Unique identifier for the new subject instance. 
+     *                            If null, the current route identifier will be used.
+     * @param mixed       $setter The data setter.
      *
      * @return SubjectInterface The new subject.
      */
-    public function newRequestProvidedSubject($id, $setter = null);
+    public function newRequestProvidedSubject($id = null, $setter = null);
 
     /**
      * Stores a subject.
      *
-     * @param SubjectInterface $subject
+     * @param SubjectInterface $subject The subject to store.
      */
     public function storeSubject(SubjectInterface $subject);
 
     /**
      * Restores a previously stored subject.
      *
-     * @param string $id The subject ID.
+     * @param string|null $id The subject ID. If null, the current route identifier will be used.
      *
-     * @return SubjectInterface|null
+     * @return SubjectInterface|null The restored subject.
      */
-    public function restoreSubject($id);
+    public function restoreSubject($id = null);
 
 }

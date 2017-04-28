@@ -59,8 +59,13 @@ class SubjectFactory extends \Aaronadal\Validator\Subject\SubjectFactory impleme
     /**
      * {@inheritdoc}
      */
-    public function restoreSubject($id)
+    public function restoreSubject($id = null)
     {
+    	if(!$id) {
+    		$request  = $this->requestStack->getCurrentRequest();
+    		$id       = $request->get('_route');
+    	}
+
         $id = $this->getSessionSubjectId($id);
         $subjects = $this->session->get($id);
         if(!$subjects) {
