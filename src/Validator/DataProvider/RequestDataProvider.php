@@ -41,7 +41,7 @@ class RequestDataProvider implements DataProviderInterface
      */
     public function getParameter($key, $default = null)
     {
-        return $this->request->get($key, $default);
+        return $this->request->get($key, null) ?: $this->request->files->get($key, $default);
     }
 
     /**
