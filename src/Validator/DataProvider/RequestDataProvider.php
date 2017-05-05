@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @author Aarón Nadal <aaronadal.dev@gmail.com>
  */
-class RequestDataProvider implements DataProviderInterface
+class RequestDataProvider implements DataProviderInterface, \Serializable
 {
 
     private $request;
@@ -55,5 +55,31 @@ class RequestDataProvider implements DataProviderInterface
         }
 
         return $value;
+    }
+
+    public function serialize()
+    {
+        return serialize([
+            'query' => $this->request->query->all(),
+            'request' => $this->request->request->all(),
+            'attributes' => $this->request->attributes->all(),
+            'cookies' => $this->request->cookies->all(),
+            'server' => $this->request->server->all(),
+            'content' => $this->request->getContent(),
+        ]);
+    }
+
+    public function unserialize($serialized)
+    {
+        $serialized = unserialize($serialized);
+        $this->request = new Request(
+            $serialized['query'],
+            $serialized['request'],
+            $serialized['attributes'],
+            $serialized['cookies'],
+            [], // Files are not serializable.
+            $serialized['server'],
+            $serialized['content']
+        );
     }
 }
