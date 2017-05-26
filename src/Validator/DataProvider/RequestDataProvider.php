@@ -6,6 +6,7 @@ namespace Aaronadal\ValidatorBundle\Validator\DataProvider;
 use Aaronadal\Validator\Exception\ParameterNotFoundException;
 use Aaronadal\Validator\Validator\DataProvider\DataProviderInterface;
 use Aaronadal\Validator\Validator\DataProvider\RecursiveArrayProviderTrait;
+use Aaronadal\Validator\Validator\DataProvider\RecursiveObjectProviderTrait;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -14,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 class RequestDataProvider implements DataProviderInterface, \Serializable
 {
     use RecursiveArrayProviderTrait;
+    use RecursiveObjectProviderTrait;
 
     private $request;
 
@@ -43,11 +45,20 @@ class RequestDataProvider implements DataProviderInterface, \Serializable
      */
     public function getParameter($key, $default = null)
     {
+        $parameter = $this->request->get($key) ?: $this->request->files->get($key);
+        if($parameter !== null) {
+            return $parameter;
+        }
+
+        if($this->isRecursiveObjectParameter($key)) {
+            return $this->getRecursiveObjectParameter($key);
+        }
+
         if($this->isRecursiveArrayParameter($key)) {
             return $this->getRecursiveArrayParameter($key);
         }
 
-        return $this->request->get($key, null) ?: $this->request->files->get($key, $default);
+        return $default;
     }
 
     /**
