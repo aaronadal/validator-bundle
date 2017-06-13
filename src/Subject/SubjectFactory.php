@@ -4,6 +4,9 @@ namespace Aaronadal\ValidatorBundle\Subject;
 
 
 use Aaronadal\Validator\Subject\SubjectInterface;
+use Aaronadal\Validator\Validator\DataProvider\DataProviderFactoryInterface;
+use Aaronadal\Validator\Validator\DataSetter\DataSetterFactoryInterface;
+use Aaronadal\Validator\Validator\ErrorCollector\ErrorCollectorInterface;
 use Aaronadal\ValidatorBundle\Validator\DataProvider\RequestDataProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
@@ -14,18 +17,17 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 class SubjectFactory extends \Aaronadal\Validator\Subject\SubjectFactory implements SubjectFactoryInterface
 {
 
-    /**
-     * @var RequestStack
-     */
     private $requestStack;
-
-    /**
-     * @var FlashBagInterface
-     */
     private $session;
 
-    public function __construct(RequestStack $requestStack, FlashBagInterface $session)
-    {
+    public function __construct(
+        DataProviderFactoryInterface $dataProviderFactory,
+        DataSetterFactoryInterface $dataSetterFactory,
+        RequestStack $requestStack,
+        FlashBagInterface $session
+    ) {
+        parent::__construct($dataProviderFactory, $dataSetterFactory);
+
         $this->requestStack = $requestStack;
         $this->session      = $session;
     }
@@ -38,13 +40,13 @@ class SubjectFactory extends \Aaronadal\Validator\Subject\SubjectFactory impleme
     /**
      * {@inheritdoc}
      */
-    public function newRequestProvidedSubject($id = null, $setter = null)
+    public function newRequestProvidedSubject($id = null, $setter = null, ErrorCollectorInterface $errorCollector = null)
     {
         $request  = $this->requestStack->getCurrentRequest();
         $provider = new RequestDataProvider($request);
         $id       = $id ?: $request->get('_route');
 
-        return $this->newSubject($id, $provider, $setter);
+        return $this->newSubject($id, $provider, $setter, $errorCollector);
     }
 
     /**
@@ -61,12 +63,12 @@ class SubjectFactory extends \Aaronadal\Validator\Subject\SubjectFactory impleme
      */
     public function restoreSubject($id = null)
     {
-    	if(!$id) {
-    		$request  = $this->requestStack->getCurrentRequest();
-    		$id       = $request->get('_route');
-    	}
+        if(!$id) {
+            $request = $this->requestStack->getCurrentRequest();
+            $id      = $request->get('_route');
+        }
 
-        $id = $this->getSessionSubjectId($id);
+        $id       = $this->getSessionSubjectId($id);
         $subjects = $this->session->get($id);
         if(!$subjects) {
             return null;

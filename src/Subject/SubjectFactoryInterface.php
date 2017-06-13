@@ -4,6 +4,7 @@ namespace Aaronadal\ValidatorBundle\Subject;
 
 
 use Aaronadal\Validator\Subject\SubjectInterface;
+use Aaronadal\Validator\Validator\ErrorCollector\ErrorCollectorInterface;
 
 /**
  * Interface for instantiate new subjects.
@@ -17,16 +18,17 @@ interface SubjectFactoryInterface extends \Aaronadal\Validator\Subject\SubjectFa
      * Creates and initializes a new SubjectInterface instance with a RequestDataProvider
      * that wraps the current master request as a data setter.
      *
-     * @param string|null $id     Unique identifier for the new subject instance. 
-     *                            If null, the current route identifier will be used.
-     * @param mixed       $setter The data setter.
+     * @param string|null                  $id             Unique identifier for the new subject instance.
+     *                                                     If null, the current route identifier will be used.
+     * @param mixed                        $setter         The target of the data setter.
+     * @param ErrorCollectorInterface|null $errorCollector The error collector.
      *
      * @return SubjectInterface The new subject.
      */
-    public function newRequestProvidedSubject($id = null, $setter = null);
+    public function newRequestProvidedSubject($id = null, $setter = null, ErrorCollectorInterface $errorCollector = null);
 
     /**
-     * Stores a subject.
+     * Stores a subject in the flashbag.
      *
      * @param SubjectInterface $subject The subject to store.
      */

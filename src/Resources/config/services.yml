@@ -1,7 +1,21 @@
 services:
+    aaronadal.validator.data_provider.factory:
+        class: Aaronadal\ValidatorBundle\Validator\DataProvider\DataProviderFactory
+
+    data_provider_factory:
+        alias: aaronadal.validator.data_provider.factory
+
+    aaronadal.validator.data_setter.factory:
+        class: Aaronadal\Validator\Validator\DataSetter\DataSetterFactory
+
+    data_setter_factory:
+        alias: aaronadal.validator.data_setter.factory
+
     aaronadal.validator.subject.factory:
         class: Aaronadal\ValidatorBundle\Subject\SubjectFactory
         arguments: 
+            - '@data_provider_factory'
+            - '@data_setter_factory'
             - '@request_stack'
             - "@=service('session').getFlashBag()"
 
