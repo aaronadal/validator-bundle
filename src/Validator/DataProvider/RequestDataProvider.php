@@ -45,7 +45,7 @@ class RequestDataProvider implements DataProviderInterface, \Serializable
      */
     public function getParameter($key, $default = null)
     {
-        $parameter = $this->request->get($key) ?: $this->request->files->get($key);
+        $parameter = $this->request->request->get($key) ?: $this->request->query->get($key) ?: $this->request->files->get($key);
         if($parameter !== null) {
             return $parameter;
         }
