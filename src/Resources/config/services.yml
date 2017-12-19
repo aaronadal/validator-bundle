@@ -4,12 +4,14 @@ services:
 
     data_provider_factory:
         alias: aaronadal.validator.data_provider.factory
+        public: true
 
     aaronadal.validator.data_setter.factory:
         class: Aaronadal\Validator\Validator\DataSetter\DataSetterFactory
 
     data_setter_factory:
         alias: aaronadal.validator.data_setter.factory
+        public: true
 
     aaronadal.validator.subject.factory:
         class: Aaronadal\ValidatorBundle\Subject\SubjectFactory
@@ -21,9 +23,11 @@ services:
 
     subject_factory:
         alias: aaronadal.validator.subject.factory
+        public: true
 
     aaronadal.validator.factory:
         class: Aaronadal\Validator\Validator\ValidatorFactory
 
     validator_factory:
         alias: aaronadal.validator.factory
+        public: true
