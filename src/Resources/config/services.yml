@@ -17,7 +17,7 @@ services:
             - '@data_provider_factory'
             - '@data_setter_factory'
             - '@request_stack'
-            - "@=service('session').getFlashBag()"
+            - '@session'
 
     subject_factory:
         alias: aaronadal.validator.subject.factory

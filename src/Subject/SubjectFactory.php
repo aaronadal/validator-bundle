@@ -9,7 +9,7 @@ use Aaronadal\Validator\Validator\DataSetter\DataSetterFactoryInterface;
 use Aaronadal\Validator\Validator\ErrorCollector\ErrorCollectorInterface;
 use Aaronadal\ValidatorBundle\Validator\DataProvider\RequestDataProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * @author Aarón Nadal <aaronadal.dev@gmail.com>
@@ -24,12 +24,12 @@ class SubjectFactory extends \Aaronadal\Validator\Subject\SubjectFactory impleme
         DataProviderFactoryInterface $dataProviderFactory,
         DataSetterFactoryInterface $dataSetterFactory,
         RequestStack $requestStack,
-        FlashBagInterface $session
+        Session $session
     ) {
         parent::__construct($dataProviderFactory, $dataSetterFactory);
 
         $this->requestStack = $requestStack;
-        $this->session      = $session;
+        $this->session      = $session->getFlashBag();
     }
 
     protected function getSessionSubjectId($id)
