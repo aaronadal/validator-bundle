@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class RequestDataProvider implements DataProviderInterface, \Serializable
 {
+
     use RecursiveArrayProviderTrait;
     use RecursiveObjectProviderTrait;
 
@@ -45,7 +46,14 @@ class RequestDataProvider implements DataProviderInterface, \Serializable
      */
     public function getParameter($key, $default = null)
     {
-        $parameter = $this->request->request->get($key) ?: $this->request->query->get($key) ?: $this->request->files->get($key);
+        $parameter = $this->request->request->get($key);
+        if($parameter === null) {
+            $parameter = $this->request->query->get($key);
+            if($parameter === null) {
+                $parameter = $this->request->files->get($key);
+            }
+        }
+
         if($parameter !== null) {
             return $parameter;
         }
@@ -76,25 +84,28 @@ class RequestDataProvider implements DataProviderInterface, \Serializable
 
     public function serialize()
     {
-        return serialize([
-            'query' => $this->request->query->all(),
-            'request' => $this->request->request->all(),
-            'attributes' => $this->request->attributes->all(),
-            'cookies' => $this->request->cookies->all(),
-            'server' => $this->request->server->all(),
-            'content' => $this->request->getContent(),
-        ]);
+        return serialize(
+            [
+                'query'      => $this->request->query->all(),
+                'request'    => $this->request->request->all(),
+                'attributes' => $this->request->attributes->all(),
+                'cookies'    => $this->request->cookies->all(),
+                'server'     => $this->request->server->all(),
+                'content'    => $this->request->getContent(),
+            ]
+        );
     }
 
     public function unserialize($serialized)
     {
-        $serialized = unserialize($serialized);
+        $serialized    = unserialize($serialized);
         $this->request = new Request(
             $serialized['query'],
             $serialized['request'],
             $serialized['attributes'],
             $serialized['cookies'],
-            [], // Files are not serializable.
+            [],
+            // Files are not serializable.
             $serialized['server'],
             $serialized['content']
         );
