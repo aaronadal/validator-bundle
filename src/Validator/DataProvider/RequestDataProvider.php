@@ -82,6 +82,19 @@ class RequestDataProvider implements DataProviderInterface, \Serializable
         return $value;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function allParameters()
+    {
+        return array_merge(
+            [],
+            $this->request->request->all(),
+            $this->request->query->all(),
+            $this->request->files->all()
+        );
+    }
+
     public function serialize()
     {
         return serialize(
@@ -92,8 +105,7 @@ class RequestDataProvider implements DataProviderInterface, \Serializable
                 'cookies'    => $this->request->cookies->all(),
                 'server'     => $this->request->server->all(),
                 'content'    => $this->request->getContent(),
-            ]
-        );
+            ]);
     }
 
     public function unserialize($serialized)
@@ -107,7 +119,6 @@ class RequestDataProvider implements DataProviderInterface, \Serializable
             [],
             // Files are not serializable.
             $serialized['server'],
-            $serialized['content']
-        );
+            $serialized['content']);
     }
 }
