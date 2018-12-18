@@ -9,6 +9,7 @@ use Aaronadal\Validator\Validator\DataSetter\DataSetterFactoryInterface;
 use Aaronadal\Validator\Validator\ErrorCollector\ErrorCollectorInterface;
 use Aaronadal\ValidatorBundle\Validator\DataProvider\RequestDataProvider;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
@@ -20,16 +21,19 @@ class SubjectFactory extends \Aaronadal\Validator\Subject\SubjectFactory impleme
     private $requestStack;
     private $session;
 
-    public function __construct(
-        DataProviderFactoryInterface $dataProviderFactory,
-        DataSetterFactoryInterface $dataSetterFactory,
-        RequestStack $requestStack,
-        Session $session
-    ) {
+    public function __construct(DataProviderFactoryInterface $dataProviderFactory, DataSetterFactoryInterface $dataSetterFactory, RequestStack $requestStack, Session $session) {
         parent::__construct($dataProviderFactory, $dataSetterFactory);
 
         $this->requestStack = $requestStack;
-        $this->session      = $session->getFlashBag();
+        $this->session      = $session;
+    }
+
+    /**
+     * @return FlashBagInterface
+     */
+    private function getSession()
+    {
+        return $this->session->getFlashBag();
     }
 
     protected function getSessionSubjectId($id)
@@ -55,7 +59,7 @@ class SubjectFactory extends \Aaronadal\Validator\Subject\SubjectFactory impleme
     public function storeSubject(SubjectInterface $subject)
     {
         $id = $this->getSessionSubjectId($subject->getId());
-        $this->session->add($id, $subject);
+        $this->getSession()->add($id, $subject);
     }
 
     /**
@@ -69,7 +73,7 @@ class SubjectFactory extends \Aaronadal\Validator\Subject\SubjectFactory impleme
         }
 
         $id       = $this->getSessionSubjectId($id);
-        $subjects = $this->session->get($id);
+        $subjects = $this->getSession()->get($id);
         if(!$subjects) {
             return null;
         }
