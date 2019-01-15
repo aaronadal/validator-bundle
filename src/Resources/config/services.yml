@@ -31,3 +31,15 @@ services:
     validator_factory:
         alias: aaronadal.validator.factory
         public: true
+
+    Aaronadal\ValidatorBundle\Validator\DataProvider\DataProviderFactory:
+        alias: '@aaronadal.validator.data_provider.factory'
+
+    Aaronadal\Validator\Validator\DataSetter\DataSetterFactory:
+        alias: '@aaronadal.validator.data_setter.factory'
+
+    Aaronadal\ValidatorBundle\Subject\SubjectFactory:
+        alias: '@aaronadal.validator.subject.factory'
+
+    Aaronadal\Validator\Validator\ValidatorFactory:
+        alias: '@aaronadal.validator.factory'
