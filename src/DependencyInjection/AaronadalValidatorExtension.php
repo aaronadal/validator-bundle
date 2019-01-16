@@ -28,4 +28,3 @@ class AaronadalValidatorExtension extends Extension
         $loader->load('services.yml');
     }
 }
-

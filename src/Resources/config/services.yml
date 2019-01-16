@@ -15,7 +15,7 @@ services:
 
     aaronadal.validator.subject.factory:
         class: Aaronadal\ValidatorBundle\Subject\SubjectFactory
-        arguments: 
+        arguments:
             - '@data_provider_factory'
             - '@data_setter_factory'
             - '@request_stack'
@@ -32,14 +32,26 @@ services:
         alias: aaronadal.validator.factory
         public: true
 
+    Aaronadal\Validator\Validator\DataProvider\DataProviderFactoryInterface:
+        alias: data_provider_factory
+
+    Aaronadal\Validator\Validator\DataSetter\DataSetterFactoryInterface:
+        alias: data_setter_factory
+
+    Aaronadal\Validator\Subject\SubjectFactoryInterface:
+        alias: subject_factory
+
+    Aaronadal\Validator\Validator\ValidatorFactoryInterface:
+        alias: validator_factory
+
     Aaronadal\ValidatorBundle\Validator\DataProvider\DataProviderFactory:
-        alias: '@aaronadal.validator.data_provider.factory'
+        alias: aaronadal.validator.data_provider.factory
 
     Aaronadal\Validator\Validator\DataSetter\DataSetterFactory:
-        alias: '@aaronadal.validator.data_setter.factory'
+        alias: aaronadal.validator.data_setter.factory
 
     Aaronadal\ValidatorBundle\Subject\SubjectFactory:
-        alias: '@aaronadal.validator.subject.factory'
+        alias: aaronadal.validator.subject.factory
 
     Aaronadal\Validator\Validator\ValidatorFactory:
-        alias: '@aaronadal.validator.factory'
+        alias: aaronadal.validator.factory
