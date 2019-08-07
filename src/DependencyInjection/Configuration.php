@@ -19,8 +19,14 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root('aaronadal_validator');
+        if(method_exists(TreeBuilder::class, 'getRootNode')) {
+            $treeBuilder = new TreeBuilder('aaronadal_validator');
+            $rootNode    = $treeBuilder->getRootNode();
+        }
+        else {
+            $treeBuilder = new TreeBuilder();
+            $rootNode    = $treeBuilder->root('aaronadal_validator');
+        }
 
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for
