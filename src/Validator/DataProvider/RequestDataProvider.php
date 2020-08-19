@@ -86,15 +86,19 @@ class RequestDataProvider implements DataProviderInterface, \Serializable
             return $parameter;
         }
 
+        $result = null;
         if($this->isRecursiveObjectParameter($key)) {
-            return $this->getRecursiveObjectParameter($key);
+            $result = $this->getRecursiveObjectParameter($key);
+        }
+        elseif($this->isRecursiveArrayParameter($key)) {
+            $result = $this->getRecursiveArrayParameter($key);
         }
 
-        if($this->isRecursiveArrayParameter($key)) {
-            return $this->getRecursiveArrayParameter($key);
+        if($result === null) {
+            return $default;
         }
 
-        return $default;
+        return $result;
     }
 
     /**
