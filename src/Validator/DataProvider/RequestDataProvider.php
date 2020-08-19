@@ -72,6 +72,34 @@ class RequestDataProvider implements DataProviderInterface, \Serializable
     /**
      * {@inheritdoc}
      */
+    public function getParameterArray($key, $default = [])
+    {
+        $parameter = $this->request->request->all($key);
+        if($parameter === null) {
+            $parameter = $this->request->query->all($key);
+            if($parameter === null) {
+                $parameter = $this->request->files->all($key);
+            }
+        }
+
+        if($parameter !== null) {
+            return $parameter;
+        }
+
+        if($this->isRecursiveObjectParameter($key)) {
+            return $this->getRecursiveObjectParameter($key);
+        }
+
+        if($this->isRecursiveArrayParameter($key)) {
+            return $this->getRecursiveArrayParameter($key);
+        }
+
+        return $default;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getParameterOrFail($key)
     {
         $value = $this->getParameter($key, null);
@@ -85,10 +113,22 @@ class RequestDataProvider implements DataProviderInterface, \Serializable
     /**
      * {@inheritdoc}
      */
+    public function getParameterArrayOrFail($key)
+    {
+        $value = $this->getParameterArray($key, null);
+        if($value === null) {
+            throw new ParameterNotFoundException("The $key parameter cannot be retrieved by this provider.");
+        }
+
+        return $value;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function allParameters()
     {
         return array_merge(
-            [],
             $this->request->request->all(),
             $this->request->query->all(),
             $this->request->files->all()
@@ -116,8 +156,7 @@ class RequestDataProvider implements DataProviderInterface, \Serializable
             $serialized['request'],
             $serialized['attributes'],
             $serialized['cookies'],
-            [],
-            // Files are not serializable.
+            [], // Files are not serializable.
             $serialized['server'],
             $serialized['content']);
     }
